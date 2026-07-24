@@ -3,7 +3,7 @@
 from datetime import datetime, timedelta
 import hashlib
 import secrets
-import jwt
+from jose import jwt
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from database import get_db

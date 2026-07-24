@@ -11,9 +11,14 @@ from routers import showrooms, users, feedback, applications, mypage, auth # �
 app = FastAPI(title="TechZero Internal API") 
 
 # CORS設定（Next.jsからの通信許可など）
+# CORS設定（Next.jsからの通信許可など）
+origins = [
+    "http://localhost:3000",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
