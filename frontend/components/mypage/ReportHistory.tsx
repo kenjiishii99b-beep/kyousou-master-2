@@ -24,8 +24,18 @@ export function ReportHistory({ items = [] }: { items?: ReportHistoryItem[] }) {
             <p className="truncate text-sm font-medium text-slate-900">
               {item.title}
             </p>
-            <p className="mt-0.5 text-xs text-slate-500">{item.createdAt}</p>
+
+            <p className="mt-0.5 text-xs text-slate-500">{item.date}</p>
           </div>
+
+          <Link
+            href={item.downloadUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded border border-slate-300 px-3 py-1 text-sm hover:bg-slate-50"
+          >
+            ダウンロード
+          </Link>
         </li>
       ))}
     </ul>
