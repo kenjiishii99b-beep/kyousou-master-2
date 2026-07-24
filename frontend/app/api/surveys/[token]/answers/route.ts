@@ -2,7 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { token: string } }
+  context: { params: Promise<{ token: string }> }
 ) {
-  return NextResponse.json({ success: true }, { status: 200 });
+  const { token } = await context.params;
+
+  return NextResponse.json(
+    {
+      success: true,
+      token,
+    },
+    { status: 200 }
+  );
 }
