@@ -1,0 +1,10 @@
+﻿azure-functions
+fastapi
+uvicorn
+sqlalchemy
+mysql-connector-python
+PyJWT
+python-dotenv
+pydantic
+email-validator
+openai
