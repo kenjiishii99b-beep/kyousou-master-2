@@ -5,6 +5,8 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from database import get_db
+from . import models_user
+from .users import get_current_admin
 
 
 router = APIRouter(
@@ -17,6 +19,7 @@ router = APIRouter(
 def get_dashboard(
     survey_id: int | None = Query(default=None),
     showroom_id: int | None = Query(default=None),
+    company_name: str | None = Query(default=None),
     db: Session = Depends(get_db),
 ):
     conditions = []
@@ -29,6 +32,10 @@ def get_dashboard(
     if showroom_id is not None:
         conditions.append("sc.showroom_id = :showroom_id")
         params["showroom_id"] = showroom_id
+
+    if company_name is not None:
+        conditions.append("ex.company_name = :company_name")
+        params["company_name"] = company_name
 
     where_clause = ""
     if conditions:
@@ -58,6 +65,8 @@ def get_dashboard(
             FROM survey_answers sa
             JOIN schedules sc
                 ON sc.id = sa.schedule_id
+            JOIN exhibitions ex
+                ON ex.id = sc.application_id
             {where_clause}
             """
         ),
@@ -91,6 +100,8 @@ def get_dashboard(
             FROM survey_answers sa
             JOIN schedules sc
                 ON sc.id = sa.schedule_id
+            JOIN exhibitions ex
+                ON ex.id = sc.application_id
             {where_clause}
             GROUP BY sa.rating
             ORDER BY sa.rating
@@ -125,6 +136,8 @@ def get_dashboard(
             FROM survey_answers sa
             JOIN schedules sc
                 ON sc.id = sa.schedule_id
+            JOIN exhibitions ex
+                ON ex.id = sc.application_id
             {where_clause}
             GROUP BY
                 COALESCE(
@@ -157,4 +170,34 @@ def get_dashboard(
         "comment_rate": comment_rate,
         "rating_breakdown": rating_breakdown,
         "purpose_breakdown": purpose_breakdown,
+    }
+
+@router.delete("/dashboard/responses")
+def delete_company_survey_responses(
+    company_name: str = Query(..., min_length=1),
+    admin: models_user.Member = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+):
+    result = db.execute(
+        text(
+            """
+            DELETE FROM survey_answers
+            WHERE schedule_id IN (
+                SELECT sc.id
+                FROM schedules sc
+                JOIN exhibitions ex
+                    ON ex.id = sc.application_id
+                WHERE ex.company_name = :company_name
+            )
+            """
+        ),
+        {"company_name": company_name},
+    )
+
+    db.commit()
+
+    return {
+        "message": "Survey responses deleted.",
+        "company_name": company_name,
+        "deleted_count": int(result.rowcount or 0),
     }

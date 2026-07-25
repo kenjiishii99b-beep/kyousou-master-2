@@ -1,6 +1,7 @@
 ﻿from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from database import get_db
@@ -55,6 +56,7 @@ def serialize_exhibition(row):
         "id": str(row["id"]),
         "showroomName": row["showroom_name"] or "",
         "companyName": row["company_name"] or "",
+        "productName": row["title"] or "",
         "categories": [
             value.strip()
             for value in (row["category"] or "").split(",")
@@ -77,6 +79,7 @@ def get_all_exhibitions(
             SELECT
                 e.id,
                 e.company_name,
+                e.title,
                 e.category,
                 e.start_date,
                 e.end_date,
@@ -157,6 +160,7 @@ def update_exhibition_status(
             SELECT
                 e.id,
                 e.company_name,
+                e.title,
                 e.category,
                 e.start_date,
                 e.end_date,
@@ -174,3 +178,73 @@ def update_exhibition_status(
     return {
         "item": serialize_exhibition(row),
     }
+
+
+@router.delete("/all")
+def delete_all_exhibitions(
+    confirm: str,
+    admin: models_user.Member = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+):
+    if confirm != "DELETE_ALL_EXHIBITIONS":
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid deletion confirmation.",
+        )
+
+    try:
+        exhibition_count = int(
+            db.execute(
+                text("SELECT COUNT(*) FROM exhibitions")
+            ).scalar() or 0
+        )
+
+        ai_result = db.execute(
+            text(
+                """
+                DELETE FROM ai_analyses
+                WHERE application_id IN (
+                    SELECT id
+                    FROM exhibitions
+                )
+                """
+            )
+        )
+
+        schedule_result = db.execute(
+            text(
+                """
+                DELETE FROM schedules
+                WHERE application_id IN (
+                    SELECT id
+                    FROM exhibitions
+                )
+                """
+            )
+        )
+
+        exhibition_result = db.execute(
+            text("DELETE FROM exhibitions")
+        )
+
+        db.commit()
+
+        return {
+            "message": "All exhibitions deleted.",
+            "deleted_exhibitions": int(
+                exhibition_result.rowcount or exhibition_count
+            ),
+            "deleted_schedules": int(
+                schedule_result.rowcount or 0
+            ),
+            "deleted_ai_analyses": int(
+                ai_result.rowcount or 0
+            ),
+        }
+
+    except SQLAlchemyError as exc:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to delete exhibitions.",
+        ) from exc

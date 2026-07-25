@@ -1,4 +1,8 @@
-import { ExhibitionItem, STATUS_COLOR, STATUS_LABEL } from "@/types/exhibition";
+﻿import {
+  ExhibitionItem,
+  STATUS_COLOR,
+  STATUS_LABEL,
+} from "@/types/exhibition";
 
 export function ExhibitionTable({
   items,
@@ -16,33 +20,53 @@ export function ExhibitionTable({
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border border-slate-200">
-      <table className="w-full text-left text-sm">
+    <div className="overflow-x-auto rounded-lg border border-slate-200">
+      <table className="w-full min-w-[900px] text-left text-sm">
         <thead className="bg-slate-50 text-xs text-slate-500">
           <tr>
-            <th className="px-4 py-2 font-medium">ショールーム</th>
-            <th className="px-4 py-2 font-medium">企業名</th>
-            <th className="px-4 py-2 font-medium">期間</th>
-            <th className="px-4 py-2 font-medium">カテゴリ</th>
-            <th className="px-4 py-2 font-medium">ステータス</th>
+            <th className="px-4 py-3 font-medium">製品名</th>
+            <th className="px-4 py-3 font-medium">企業名</th>
+            <th className="px-4 py-3 font-medium">
+              ショールーム
+            </th>
+            <th className="px-4 py-3 font-medium">期間</th>
+            <th className="px-4 py-3 font-medium">カテゴリ</th>
+            <th className="px-4 py-3 font-medium">ステータス</th>
           </tr>
         </thead>
+
         <tbody className="divide-y divide-slate-100">
           {items.map((item) => (
             <tr
               key={item.id}
               onClick={() => onSelect(item)}
-              className="cursor-pointer hover:bg-slate-50"
+              className="cursor-pointer transition hover:bg-slate-50"
             >
-              <td className="px-4 py-3 font-medium text-slate-900">{item.showroomName}</td>
-              <td className="px-4 py-3 text-slate-600">{item.companyName}</td>
-              <td className="px-4 py-3 text-slate-600">
-                {item.periodFrom}〜{item.periodTo}
+              <td className="px-4 py-3 font-semibold text-slate-900">
+                {item.productName || "製品名未登録"}
               </td>
-              <td className="px-4 py-3 text-slate-600">{item.categories.join("、")}</td>
+
+              <td className="px-4 py-3 text-slate-600">
+                {item.companyName}
+              </td>
+
+              <td className="px-4 py-3 text-slate-600">
+                {item.showroomName}
+              </td>
+
+              <td className="whitespace-nowrap px-4 py-3 text-slate-600">
+                {item.periodFrom} ～ {item.periodTo}
+              </td>
+
+              <td className="px-4 py-3 text-slate-600">
+                {item.categories.join("、") || "未設定"}
+              </td>
+
               <td className="px-4 py-3">
                 <span
-                  className={`rounded px-2 py-1 text-xs font-medium ${STATUS_COLOR[item.status].badge}`}
+                  className={`whitespace-nowrap rounded px-2 py-1 text-xs font-medium ${
+                    STATUS_COLOR[item.status].badge
+                  }`}
                 >
                   {STATUS_LABEL[item.status]}
                 </span>

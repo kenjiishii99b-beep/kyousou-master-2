@@ -23,6 +23,80 @@ class SurveyAnswerCreate(BaseModel):
     comment: str | None = Field(default=None, max_length=500)
 
 
+
+@router.get("/{survey_token}")
+def get_survey(
+    survey_token: str,
+    db: Session = Depends(get_db),
+):
+    survey = db.execute(
+        text(
+            """
+            SELECT
+                sv.token,
+                sv.status,
+                sr.name AS showroom_name,
+                ex.title AS exhibit_title,
+                ex.company_name
+            FROM surveys sv
+            JOIN schedules sc
+                ON sc.id = sv.schedule_id
+            LEFT JOIN showrooms sr
+                ON sr.id = sc.showroom_id
+            LEFT JOIN exhibitions ex
+                ON ex.id = sc.application_id
+            WHERE sv.token = :survey_token
+            LIMIT 1
+            """
+        ),
+        {"survey_token": survey_token},
+    ).mappings().first()
+
+    if survey is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="\u30a2\u30f3\u30b1\u30fc\u30c8\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002",
+        )
+
+    if survey["status"] != "active":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="\u3053\u306e\u30a2\u30f3\u30b1\u30fc\u30c8\u306f\u73fe\u5728\u56de\u7b54\u3067\u304d\u307e\u305b\u3093\u3002",
+        )
+
+    return {
+        "token": survey["token"],
+        "showroomName": survey["showroom_name"] or "",
+        "companyName": survey["company_name"] or "",
+        "exhibitTitle": survey["exhibit_title"] or "",
+        "questions": [
+            {
+                "id": "q1",
+                "type": "rating",
+                "label": "\u5c55\u793a\u5185\u5bb9\u306e\u6e80\u8db3\u5ea6\u3092\u6559\u3048\u3066\u304f\u3060\u3055\u3044",
+                "required": True,
+            },
+            {
+                "id": "q2",
+                "type": "choice",
+                "label": "\u3054\u6765\u5834\u306e\u76ee\u7684\u306f\u4f55\u3067\u3059\u304b\uff1f",
+                "required": True,
+                "options": [
+                    "\u60c5\u5831\u53ce\u96c6",
+                    "\u5546\u54c1\u6bd4\u8f03",
+                    "\u65b0\u898f\u691c\u8a0e",
+                ],
+            },
+            {
+                "id": "q3",
+                "type": "text",
+                "label": "\u3054\u611f\u60f3\u30fb\u3054\u610f\u898b\u304c\u3042\u308c\u3070\u304a\u805e\u304b\u305b\u304f\u3060\u3055\u3044",
+                "required": False,
+            },
+        ],
+    }
+
+
 @router.post(
     "/{survey_token}/responses",
     status_code=status.HTTP_201_CREATED,

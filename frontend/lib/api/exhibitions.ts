@@ -32,3 +32,31 @@ export async function updateExhibitionStatus(
 
   return res.json();
 }
+
+
+export interface DeleteAllExhibitionsResult {
+  message: string;
+  deleted_exhibitions: number;
+  deleted_schedules: number;
+  deleted_ai_analyses: number;
+}
+
+export async function deleteAllExhibitions(): Promise<DeleteAllExhibitionsResult> {
+  const res = await fetch("/api/admin/exhibitions", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+
+    throw new Error(
+      body?.error?.message ??
+        "\u5c55\u793a\u30c7\u30fc\u30bf\u306e\u524a\u9664\u306b\u5931\u6557\u3057\u307e\u3057\u305f\u3002",
+    );
+  }
+
+  return res.json();
+}

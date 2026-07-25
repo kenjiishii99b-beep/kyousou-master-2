@@ -33,6 +33,7 @@ export interface AiAnalysisData {
 export async function fetchDashboard(
   surveyId?: number,
   showroomId?: number,
+  companyName?: string,
 ): Promise<DashboardData> {
   const params = new URLSearchParams();
 
@@ -42,6 +43,10 @@ export async function fetchDashboard(
 
   if (showroomId !== undefined) {
     params.set("showroom_id", String(showroomId));
+  }
+
+  if (companyName !== undefined) {
+    params.set("company_name", companyName);
   }
 
   const query = params.toString();
@@ -125,4 +130,43 @@ export async function fetchLatestAiAnalysis(
   const body = await response.json();
 
   return body.analysis ?? null;
+}
+
+
+export interface DeleteSurveyResponsesResult {
+  message: string;
+  company_name: string;
+  deleted_count: number;
+}
+
+export async function deleteCompanySurveyResponses(
+  companyName: string,
+): Promise<DeleteSurveyResponsesResult> {
+  const params = new URLSearchParams({
+    company_name: companyName,
+  });
+
+  const url =
+    `${API_BASE_URL}/api/admin/dashboard/responses?` +
+    params.toString();
+
+  const response = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+
+    throw new Error(
+      body?.detail ??
+        body?.error?.message ??
+        "??????????????????",
+    );
+  }
+
+  return response.json();
 }

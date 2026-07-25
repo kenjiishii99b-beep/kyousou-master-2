@@ -19,6 +19,7 @@ export interface ApplicationHistoryItem {
   id: string;
   showroomId: string;
   showroomName: string;
+  productName: string;
   categories: string[];
   periodFrom: string;
   periodTo: string;

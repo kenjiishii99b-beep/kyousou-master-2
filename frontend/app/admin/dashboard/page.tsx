@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import {
@@ -11,12 +11,14 @@ import {
 import {
   AiAnalysisData,
   DashboardData,
+  deleteCompanySurveyResponses,
   fetchDashboard,
   fetchLatestAiAnalysis,
   runAiAnalysis,
 } from "@/lib/api/dashboard";
 
-const APPLICATION_ID = 1;
+const APPLICATION_ID = 6;
+const COMPANY_NAME = "\u30c6\u30b9\u30c8\u30b9\u30bf\u30fc\u30c8\u30a2\u30c3\u30d7\u682a\u5f0f\u4f1a\u793e";
 
 export default function AdminDashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
@@ -28,6 +30,12 @@ export default function AdminDashboardPage() {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
 
+  const [deleting, setDeleting] = useState(false);
+  const [deleteMessage, setDeleteMessage] =
+    useState<string | null>(null);
+  const [deleteError, setDeleteError] =
+    useState<string | null>(null);
+
   const loadDashboard = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -35,7 +43,7 @@ export default function AdminDashboardPage() {
     try {
       const [dashboardResult, latestAnalysis] =
         await Promise.all([
-          fetchDashboard(),
+          fetchDashboard(undefined, undefined, COMPANY_NAME),
           fetchLatestAiAnalysis(APPLICATION_ID),
         ]);
 
@@ -55,6 +63,40 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     void loadDashboard();
   }, [loadDashboard]);
+
+  const handleDeleteAllResponses = async () => {
+    const confirmed = window.confirm(
+      "\u30c6\u30b9\u30c8\u30b9\u30bf\u30fc\u30c8\u30a2\u30c3\u30d7\u682a\u5f0f\u4f1a\u793e\u306e\u30a2\u30f3\u30b1\u30fc\u30c8\u56de\u7b54\u3092\u3059\u3079\u3066\u524a\u9664\u3057\u307e\u3059\u3002\u3053\u306e\u64cd\u4f5c\u306f\u5143\u306b\u623b\u305b\u307e\u305b\u3093\u3002\u524a\u9664\u3057\u307e\u3059\u304b\uff1f",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setDeleting(true);
+    setDeleteMessage(null);
+    setDeleteError(null);
+
+    try {
+      const result =
+        await deleteCompanySurveyResponses(COMPANY_NAME);
+
+      setDeleteMessage(
+        `${result.deleted_count}\u4ef6\u306e\u30a2\u30f3\u30b1\u30fc\u30c8\u56de\u7b54\u3092\u524a\u9664\u3057\u307e\u3057\u305f\u3002`,
+      );
+
+      setAiAnalysis(null);
+      await loadDashboard();
+    } catch (e) {
+      setDeleteError(
+        e instanceof Error
+          ? e.message
+          : "\u30a2\u30f3\u30b1\u30fc\u30c8\u56de\u7b54\u306e\u524a\u9664\u306b\u5931\u6557\u3057\u307e\u3057\u305f\u3002",
+      );
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   const handleRunAiAnalysis = async () => {
     setAiLoading(true);
@@ -107,6 +149,22 @@ export default function AdminDashboardPage() {
 
           <button
             type="button"
+            onClick={() => void handleDeleteAllResponses()}
+            disabled={
+              deleting ||
+              loading ||
+              !data ||
+              data.total_responses === 0
+            }
+            className="rounded-md border border-red-500 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {deleting
+              ? "\u524a\u9664\u4e2d..."
+              : "\u3059\u3079\u3066\u306e\u56de\u7b54\u3092\u524a\u9664"}
+          </button>
+
+          <button
+            type="button"
             onClick={() => void loadDashboard()}
             disabled={loading}
             className="rounded-md bg-slate-900 px-4 py-2 text-sm text-white hover:bg-slate-800 disabled:opacity-50"
@@ -119,6 +177,18 @@ export default function AdminDashboardPage() {
       {error && (
         <p className="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-600">
           {error}
+        </p>
+      )}
+
+      {deleteMessage && (
+        <p className="mb-4 rounded-md bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+          {deleteMessage}
+        </p>
+      )}
+
+      {deleteError && (
+        <p className="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-600">
+          {deleteError}
         </p>
       )}
 

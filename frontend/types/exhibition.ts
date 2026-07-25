@@ -55,6 +55,7 @@ export interface ExhibitionItem {
   id: string;
   showroomName: string;
   companyName: string;
+  productName: string;
   categories: string[];
   periodFrom: string;
   periodTo: string;

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { CalendarDays, ClipboardCheck } from "lucide-react";
+import { BarChart3, CalendarDays, ClipboardCheck } from "lucide-react";
 import { ProfileCard } from "@/components/mypage/ProfileCard";
 import { ApplicationHistory } from "@/components/mypage/ApplicationHistory";
 import { ReportHistory } from "@/components/mypage/ReportHistory";
@@ -63,7 +63,7 @@ export default function MypagePage() {
             {"\u7ba1\u7406\u8005\u30e1\u30cb\u30e5\u30fc"}
           </h2>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-3">
             <Link
               href="/admin/approvals"
               className="group rounded-xl border border-blue-200 bg-blue-50 p-5 transition hover:border-blue-400 hover:bg-blue-100"
@@ -99,6 +99,30 @@ export default function MypagePage() {
                 {
                   "\u627f\u8a8d\u6e08\u307f\u306e\u5c55\u793a\u3092\u30ab\u30ec\u30f3\u30c0\u30fc\u3084\u4e00\u89a7\u3067\u78ba\u8a8d\u3057\u3001\u5c55\u793a\u4e2d\u30fb\u7d42\u4e86\u306a\u3069\u306e\u72b6\u614b\u3092\u7ba1\u7406\u3057\u307e\u3059\u3002"
                 }
+              </p>
+            </Link>
+
+            <Link
+              href="/admin/dashboard"
+              className="group rounded-xl border border-violet-200 bg-violet-50 p-5 transition hover:border-violet-400 hover:bg-violet-100"
+            >
+              <div
+              className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl shadow-md"
+              style={{ backgroundColor: "#6d28d9" }}
+            >
+              <BarChart3
+                className="h-7 w-7"
+                color="#ffffff"
+                strokeWidth={2.5}
+              />
+            </div>
+
+              <p className="font-semibold text-slate-900">
+                {"\u30a2\u30f3\u30b1\u30fc\u30c8\u30c0\u30c3\u30b7\u30e5\u30dc\u30fc\u30c9"}
+              </p>
+
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                {"\u30c6\u30b9\u30c8\u30b9\u30bf\u30fc\u30c8\u30a2\u30c3\u30d7\u682a\u5f0f\u4f1a\u793e\u306b\u7d10\u3065\u304f\u30a2\u30f3\u30b1\u30fc\u30c8\u56de\u7b54\u3092\u4e00\u5143\u7684\u306b\u78ba\u8a8d\u3057\u307e\u3059\u3002"}
               </p>
             </Link>
           </div>

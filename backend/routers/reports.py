@@ -80,11 +80,7 @@ def get_report_history(
         "reports": [
             {
                 "id": str(row["id"]),
-                "title": (
-                    f"{row['title']} \u0041\u0049\u5206\u6790\u30ec\u30dd\u30fc\u30c8"
-                    if row["title"]
-                    else "\u0041\u0049\u5206\u6790\u30ec\u30dd\u30fc\u30c8"
-                ),
+                "title": "\u0041\u0049\u5206\u6790\u30ec\u30dd\u30fc\u30c8",
                 "date": row["created_at"].date().isoformat(),
                 "showroomName": row["showroom_name"] or "",
                 "companyName": row["company_name"] or "",

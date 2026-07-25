@@ -152,6 +152,7 @@ def get_my_applications(
                 e.id,
                 e.showroom_id,
                 sh.name AS showroom_name,
+                e.title AS product_name,
                 e.category,
                 e.start_date,
                 e.end_date,
@@ -181,6 +182,7 @@ def get_my_applications(
                 "id": str(row["id"]),
                 "showroomId": str(row["showroom_id"]),
                 "showroomName": row["showroom_name"] or "",
+                "productName": row["product_name"] or "",
                 "categories": [
                     value.strip()
                     for value in (row["category"] or "").split(",")

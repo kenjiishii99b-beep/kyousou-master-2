@@ -57,8 +57,7 @@ export function SurveyForm({ survey }: { survey: SurveyDefinition }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <p className="text-xs text-slate-400">{survey.showroomName}</p>
-        <h1 className="text-lg font-bold text-slate-900">{survey.exhibitTitle}</h1>
+        <h1 className="text-lg font-bold text-slate-900">{survey.companyName}</h1>
         <p className="mt-1 text-sm text-slate-600">
           ご来場ありがとうございます。よろしければ、展示についてのご感想をお聞かせください。
         </p>

@@ -14,6 +14,7 @@ export interface SurveyQuestion {
 export interface SurveyDefinition {
   token: string;
   showroomName: string;
+  companyName: string;
   exhibitTitle: string;
   questions: SurveyQuestion[];
 }

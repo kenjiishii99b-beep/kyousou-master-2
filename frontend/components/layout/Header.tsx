@@ -1,15 +1,28 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useAuth } from "@/lib/auth/AuthContext";
 import { UserCircle } from "lucide-react";
 
+import { useAuth } from "@/lib/auth/AuthContext";
+
 const NAV_ITEMS = [
-  { href: "/", label: "トップ" },
-  { href: "/showrooms", label: "ショールーム検索" },
-  { href: "/applications/new", label: "展示関連" },
-  { href: "/surveys/test123", label: "アンケート" },
+  {
+    href: "/",
+    label: "\u30c8\u30c3\u30d7",
+  },
+  {
+    href: "/showrooms",
+    label: "\u30b7\u30e7\u30fc\u30eb\u30fc\u30e0\u691c\u7d22",
+  },
+  {
+    href: "/applications/new",
+    label: "\u5c55\u793a\u95a2\u9023",
+  },
+  {
+    href: "/surveys/9eeb3fe7-4c05-4933-910c-d9b20f83831d",
+    label: "\u30a2\u30f3\u30b1\u30fc\u30c8",
+  },
 ];
 
 export function Header() {
@@ -27,16 +40,24 @@ export function Header() {
     <header className="border-b border-slate-100">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         <Link href="/" className="leading-tight">
-          <p className="text-sm font-bold text-slate-900">Techzeron</p>
-          <p className="text-sm font-bold text-slate-900">Startup Lab</p>
+          <p className="text-sm font-bold text-slate-900">
+            Techzeron
+          </p>
+          <p className="text-sm font-bold text-slate-900">
+            Startup Lab
+          </p>
         </Link>
 
         <nav className="hidden items-center gap-6 text-sm text-slate-600 md:flex">
           {NAV_ITEMS.map((item) => {
-            const active = pathname === item.href;
+            const active =
+              item.href === "/"
+                ? pathname === "/"
+                : pathname.startsWith(item.href);
+
             return (
               <Link
-                key={item.label}
+                key={item.href}
                 href={item.href}
                 className={`pb-1 ${
                   active
@@ -61,17 +82,22 @@ export function Header() {
               }`}
             >
               <UserCircle className="h-4 w-4" />
-              <span>{"\u30de\u30a4\u30da\u30fc\u30b8"}</span>
+
+              <span>
+                {"\u30de\u30a4\u30da\u30fc\u30b8"}
+              </span>
+
               <span className="hidden text-xs text-slate-300 lg:inline">
                 {user.name} {"\u69d8"}
               </span>
             </Link>
+
             <button
               type="button"
-              onClick={handleLogout}
+              onClick={() => void handleLogout()}
               className="rounded-md border border-slate-300 px-4 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
             >
-              ログアウト
+              {"\u30ed\u30b0\u30a2\u30a6\u30c8"}
             </button>
           </div>
         ) : (
@@ -80,13 +106,14 @@ export function Header() {
               href="/signup"
               className="rounded-md border border-slate-300 px-4 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
             >
-              新規会員登録
+              {"\u65b0\u898f\u4f1a\u54e1\u767b\u9332"}
             </Link>
+
             <Link
               href="/login"
               className="rounded-md bg-slate-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-slate-800"
             >
-              ログイン
+              {"\u30ed\u30b0\u30a4\u30f3"}
             </Link>
           </div>
         )}
