@@ -29,9 +29,9 @@ export function LoginForm() {
     setLoading(true);
     try {
       const res = await login({ email, password, keepLoggedIn });
-      setUser(res.user);
+      setUser(res);
 
-      if (res.user.role === "admin") {
+      if (res.role === "admin") {
         router.push("/admin/exhibitions");
       } else {
         router.push("/mypage");
