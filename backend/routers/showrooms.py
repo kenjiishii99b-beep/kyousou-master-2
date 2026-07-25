@@ -11,7 +11,7 @@ router = APIRouter(
 )
 
 # 💡 1. ショールーム一覧・検索 API
-@router.get("")
+
 @router.get("/")
 def search_showrooms(prefecture: Optional[str] = None, db: Session = Depends(get_db)):
     query = db.query(Showroom)

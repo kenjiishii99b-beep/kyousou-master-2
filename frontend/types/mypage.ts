@@ -1,42 +1,50 @@
-// マイページ用の型定義
-// 仕様書 3.2「/api/mypage」相当を想定
+import Link from "next/link";
+import { ReportHistoryItem } from "@/types/mypage";
 
-export type ApplicationStatus = "pending" | "exhibiting" | "finished" | "cancelled";
-
-export const STATUS_LABEL: Record<ApplicationStatus, string> = {
-  pending: "予定",
-  exhibiting: "展示中",
-  finished: "終了",
-  cancelled: "中止",
-};
-
-export interface ApplicationHistoryItem {
-  id: string;
-  showroomId: string;
-  showroomName: string;
-  categories: string[];
-  periodFrom: string;
-  periodTo: string;
-  status: ApplicationStatus;
+interface ReportHistoryProps {
+  items?: ReportHistoryItem[];
 }
 
-export interface ReportHistoryItem {
-  id: string;
-  title: string;
-  date: string;
-  downloadUrl: string;
-}
+export function ReportHistory({ items = [] }: ReportHistoryProps) {
+  // items が null や undefined の場合でも安全に処理
+  const safeItems = items ?? [];
 
-export interface ProfileInfo {
-  lastName: string;
-  firstName: string;
-  companyName: string;
-  email: string;
-  phone: string;
-}
+  if (safeItems.length === 0) {
+    return (
+      <div className="rounded-lg border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">
+        まだレポートがありません。展示が終了すると、ここに結果レポートが表示されます。
+      </div>
+    );
+  }
 
-export interface MypageResponse {
-  profile: ProfileInfo;
-  applications: ApplicationHistoryItem[];
-  reports: ReportHistoryItem[];
+  return (
+    <ul className="divide-y divide-slate-100 rounded-lg border border-slate-200">
+      {safeItems.map((item) => (
+        <li
+          key={item.id}
+          className="flex items-center justify-between gap-4 px-4 py-3"
+        >
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium text-slate-900">
+              {item.title}
+            </p>
+
+            {/* ReportHistoryItem の型に合わせて date を表示 */}
+            <p className="mt-0.5 text-xs text-slate-500">
+              {item.date}
+            </p>
+          </div>
+
+          <Link
+            href={item.downloadUrl}
+            className="rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-700 transition hover:bg-slate-100"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            ダウンロード
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
 }

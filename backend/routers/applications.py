@@ -20,7 +20,7 @@ class ApplicationCreate(BaseModel):
     category: str
     notes: Optional[str] = None
 
-@router.post("")
+
 @router.post("/")
 def create_application(
     app_data: ApplicationCreate, 

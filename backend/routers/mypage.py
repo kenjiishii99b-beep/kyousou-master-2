@@ -11,7 +11,7 @@ router = APIRouter(
     tags=["mypage"]
 )
 
-@router.get("")
+
 @router.get("/")
 def get_mypage_data(
     db: Session = Depends(get_db),
