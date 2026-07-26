@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ExhibitionItem, STATUS_COLOR, STATUS_LABEL, ExhibitionStatus } from "@/types/exhibition";
@@ -186,9 +186,9 @@ export function AdminCalendar({
                     gridRow: bar.lane + 2,
                   }}
                   className={`truncate rounded px-1.5 text-left text-[10px] font-medium ${STATUS_COLOR[bar.item.status].bar}`}
-                  title={bar.item.showroomName}
+                  title={`${bar.item.companyName}｜${bar.item.productName || "製品名未登録"}`}
                 >
-                  {bar.item.showroomName}
+                  {bar.item.companyName}｜{bar.item.productName || "製品名未登録"}
                 </button>
               ))}
             </div>
@@ -198,3 +198,4 @@ export function AdminCalendar({
     </div>
   );
 }
+

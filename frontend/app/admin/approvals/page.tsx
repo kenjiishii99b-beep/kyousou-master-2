@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { CheckCircle2, Clock3, XCircle } from "lucide-react";
@@ -146,6 +146,9 @@ export default function AdminApprovalsPage() {
 
                   <h2 className="text-lg font-semibold text-slate-900">
                     {item.companyName}
+                    <span className="ml-2 text-base font-medium text-slate-600">
+                      ｜{item.productName || "製品名未登録"}
+                    </span>
                   </h2>
 
                   <dl className="grid gap-x-8 gap-y-2 text-sm sm:grid-cols-2">
@@ -209,3 +212,4 @@ export default function AdminApprovalsPage() {
     </main>
   );
 }
+
