@@ -1,4 +1,8 @@
-import { LoginPayload, SignupPayload, AuthUser } from "@/types/auth";
+﻿import { LoginPayload, SignupPayload, AuthUser } from "@/types/auth";
+
+type AuthResponse = {
+  user: AuthUser;
+};
 
 async function postJson<T>(url: string, body: unknown): Promise<T> {
   const res = await fetch(url, {
@@ -19,7 +23,7 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
             ? responseBody.error.detail
             : typeof responseBody?.detail === "string"
               ? responseBody.detail
-              : "\u8a8d\u8a3c\u306b\u5931\u6557\u3057\u307e\u3057\u305f\u3002";
+              : "認証に失敗しました。";
 
     throw new Error(message);
   }
@@ -27,10 +31,12 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
   return res.json();
 }
 
-export function login(payload: LoginPayload): Promise<AuthUser> {
-  return postJson<AuthUser>("/api/auth/login", payload);
+export async function login(payload: LoginPayload): Promise<AuthUser> {
+  const response = await postJson<AuthResponse>("/api/auth/login", payload);
+  return response.user;
 }
 
-export function signup(payload: SignupPayload): Promise<AuthUser> {
-  return postJson<AuthUser>("/api/auth/signup", payload);
+export async function signup(payload: SignupPayload): Promise<AuthUser> {
+  const response = await postJson<AuthResponse>("/api/auth/signup", payload);
+  return response.user;
 }
