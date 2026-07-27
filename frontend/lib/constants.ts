@@ -1,0 +1,1 @@
+export const DEFAULT_SHOWROOM_IMAGE = "/showroom-main.jpg";
