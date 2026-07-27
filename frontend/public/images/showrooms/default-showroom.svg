@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" role="img" aria-labelledby="title description">
+  <title id="title">ショールーム外観</title>
+  <description id="description">ガラス張りの住宅設備ショールームを表したプレースホルダー画像</description>
+  <rect width="560" height="400" fill="#eef4f8"/>
+  <rect y="310" width="560" height="90" fill="#d9e2e8"/>
+  <rect x="55" y="100" width="450" height="220" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="5"/>
+  <rect x="75" y="125" width="410" height="145" fill="#dbeafe"/>
+  <path d="M75 125h410M178 125v145M382 125v145" stroke="#94a3b8" stroke-width="5"/>
+  <rect x="230" y="210" width="100" height="110" fill="#cbd5e1" stroke="#64748b" stroke-width="5"/>
+  <path d="M280 210v110" stroke="#64748b" stroke-width="4"/>
+  <rect x="140" y="65" width="280" height="64" rx="8" fill="#0f172a"/>
+  <text x="280" y="106" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#ffffff">SHOWROOM</text>
+  <circle cx="105" cy="300" r="32" fill="#94a3b8"/>
+  <circle cx="455" cy="300" r="32" fill="#94a3b8"/>
+  <rect x="30" y="334" width="500" height="10" rx="5" fill="#94a3b8"/>
+</svg>
